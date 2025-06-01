@@ -182,3 +182,4 @@ cython_debug/
 .cursorindexingignore
 
 *.bak
+appointments.db

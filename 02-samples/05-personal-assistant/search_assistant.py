@@ -48,8 +48,9 @@ def search_assistant(query: str) -> str:
     Returns:
         Output from interaction
     """
-    response = agent(query)
-    return response
+    with perplexity_mcp_server:
+        response = agent(query)
+        return response
     
 
 system_prompt = """You are an intelligent search and research assistant with access to real-time web information.
