@@ -1,13 +1,15 @@
 import os
 from dotenv import load_dotenv
 from mcp import StdioServerParameters, stdio_client
-from strands import Agent
+from strands import Agent, tool
 from strands.models import BedrockModel
 from strands.tools.mcp import MCPClient
 
 # Load environment variables
 load_dotenv()
 
+# Show rich UI for tools in CLI
+os.environ["STRANDS_TOOL_CONSOLE_MODE"] = "enabled"
 
 PERPLEXITY_API_KEY = os.getenv("PERPLEXITY_API_KEY")
 
@@ -36,6 +38,7 @@ except Exception as e:
     raise Exception(f"Failed to initialize MCP Client: {str(e)}")
 
 
+@tool
 def search_assistant(query: str) -> str:
     """
     Search assistant agent for handling general queries
@@ -45,7 +48,11 @@ def search_assistant(query: str) -> str:
     Returns:
         Output from interaction
     """
-    system_prompt = """You are an intelligent search and research assistant with access to real-time web information.
+    response = agent(query)
+    return response
+    
+
+system_prompt = """You are an intelligent search and research assistant with access to real-time web information.
 
     Your capabilities include:
     - Searching the web for current information and news
@@ -68,25 +75,19 @@ def search_assistant(query: str) -> str:
     3. Provide context and background information
     4. Summarize key findings clearly
     5. Highlight any limitations or uncertainties in the data"""
-    """Initialize the search agent with Perplexity MCP server."""
 
-    try:
-        model = BedrockModel(
-            model_id="us.anthropic.claude-3-7-sonnet-20250219-v1:0",
-        )
-        # Get available tools from MCP server
-        tools = perplexity_mcp_server.list_tools_sync()
+with perplexity_mcp_server:
+    model = BedrockModel(
+        model_id="us.anthropic.claude-sonnet-4-20250514-v1:0",
+    )
+    # Get available tools from MCP server
+    tools = perplexity_mcp_server.list_tools_sync()
 
-        agent = Agent(
-            model=model,
-            system_prompt=system_prompt,
-            tools=tools,
-        )
-        response = agent(query)
-        return response
-
-    except Exception as e:
-        raise Exception(f"Failed to create agent: {str(e)}")
+    agent = Agent(
+        model=model,
+        system_prompt=system_prompt,
+        tools=tools,
+    )
 
 
 if __name__ == "__main__":

@@ -1,3 +1,4 @@
+import os
 import sqlite3
 import uuid
 from datetime import datetime
@@ -6,6 +7,9 @@ from strands.models import BedrockModel
 from strands_tools import current_time
 import list_appointments
 import update_appointment
+
+# Show rich UI for tools in CLI
+os.environ["STRANDS_TOOL_CONSOLE_MODE"] = "enabled"
 
 
 @tool
@@ -151,28 +155,30 @@ def calendar_assistant(query: str) -> str:
     Returns:
         Output from interaction
     """
-    system_prompt = """You are a helpful calendar assistant that specializes in managing my appointments. 
-    You have access to appointment management tools, and can check the current time to help me organize my schedule effectively. 
-    Always provide the appointment id so that I can update it if required"""
-
-    model = BedrockModel(
-        model_id="us.anthropic.claude-3-7-sonnet-20250219-v1:0",
-    )
-
-    agent = Agent(
-        model=model,
-        system_prompt=system_prompt,
-        tools=[
-            current_time,
-            create_appointment,
-            list_appointments,
-            update_appointment,
-            get_agenda
-        ],
-    )
     # Call the agent and return its response
     response = agent(query)
     return str(response)
+
+
+system_prompt = """You are a helpful calendar assistant that specializes in managing my appointments. 
+You have access to appointment management tools, and can check the current time to help me organize my schedule effectively. 
+Always provide the appointment id so that I can update it if required"""
+
+model = BedrockModel(
+    model_id="us.anthropic.claude-sonnet-4-20250514-v1:0",
+)
+
+agent = Agent(
+    model=model,
+    system_prompt=system_prompt,
+    tools=[
+        current_time,
+        create_appointment,
+        list_appointments,
+        update_appointment,
+        get_agenda
+    ],
+)
 
 
 if __name__ == "__main__":
