@@ -5,8 +5,7 @@ from datetime import datetime
 from strands import Agent, tool
 from strands.models import BedrockModel
 from strands_tools import current_time
-import list_appointments
-import update_appointment
+from calendar_tools import list_appointments, update_appointment
 
 # Show rich UI for tools in CLI
 os.environ["STRANDS_TOOL_CONSOLE_MODE"] = "enabled"
