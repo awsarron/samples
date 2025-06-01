@@ -11,8 +11,24 @@ load_dotenv()
 # Show rich UI for tools in CLI
 os.environ["STRANDS_TOOL_CONSOLE_MODE"] = "enabled"
 
-PERPLEXITY_API_KEY = os.getenv("PERPLEXITY_API_KEY")
 
+@tool
+def search_assistant(query: str) -> str:
+    """
+    Search assistant agent for handling general queries
+    Args:
+        query: A request to the search assistant
+
+    Returns:
+        Output from interaction
+    """
+    # Reuse the already initialized MCP server connection
+    response = agent(query)
+    print("\n\n")
+    return response
+
+
+PERPLEXITY_API_KEY = os.getenv("PERPLEXITY_API_KEY")
 if not PERPLEXITY_API_KEY:
     raise ValueError("PERPLEXITY_API_KEY environment variable is required")
 
@@ -38,22 +54,6 @@ except Exception as e:
     raise Exception(f"Failed to initialize MCP Client: {str(e)}")
 
 
-@tool
-def search_assistant(query: str) -> str:
-    """
-    Search assistant agent for handling general queries
-    Args:
-        query: A request to the search assistant
-
-    Returns:
-        Output from interaction
-    """
-    with perplexity_mcp_server:
-        response = agent(query)
-        print("\n\n")
-        return response
-    
-
 system_prompt = """You are an intelligent search and research assistant with access to real-time web information.
 
     Your capabilities include:
@@ -78,7 +78,10 @@ system_prompt = """You are an intelligent search and research assistant with acc
     4. Summarize key findings clearly
     5. Highlight any limitations or uncertainties in the data"""
 
-with perplexity_mcp_server:
+# Initialize the MCP server connection once and reuse it
+perplexity_mcp_server.__enter__()
+
+try:
     model = BedrockModel(
         model_id="us.anthropic.claude-sonnet-4-20250514-v1:0",
     )
@@ -90,6 +93,9 @@ with perplexity_mcp_server:
         system_prompt=system_prompt,
         tools=tools,
     )
+except Exception as e:
+    perplexity_mcp_server.__exit__(None, None, None)
+    raise e
 
 
 if __name__ == "__main__":
