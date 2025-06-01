@@ -20,6 +20,7 @@ def calendar_assistant(query: str) -> str:
     """
     # Call the agent and return its response
     response = agent(query)
+    print("\n\n")
     return str(response)
 
 
@@ -83,8 +84,6 @@ if __name__ == "__main__":
 
             print("🤖 CalendarBot: ", end="")
             response = calendar_assistant(user_input)
-            print(response)
-            print()
 
         except KeyboardInterrupt:
             print()

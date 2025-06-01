@@ -18,6 +18,7 @@ def code_assistant(query: str) -> str:
         Output from interaction
     """
     response = agent(query)
+    print("\n\n")
     return response
 
 
@@ -87,8 +88,6 @@ if __name__ == "__main__":
                 break
             print("🤖 CodingBot: ", end="")
             response = code_assistant(user_input)
-            print(response)
-            print()
 
         except KeyboardInterrupt:
             print("\n")

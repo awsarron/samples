@@ -50,6 +50,7 @@ def search_assistant(query: str) -> str:
     """
     with perplexity_mcp_server:
         response = agent(query)
+        print("\n\n")
         return response
     
 
@@ -138,11 +139,9 @@ if __name__ == "__main__":
             print("🤖 SearchBot: ", end="")
             try:
                 response = search_assistant(user_input)
-                print(response)
             except Exception as e:
                 print(f"❌ Error processing search query: {str(e)}")
                 print("🔧 Please try rephrasing your question or check your connection")
-            print()
         except KeyboardInterrupt:
             print("\n")
             print("============================================================")

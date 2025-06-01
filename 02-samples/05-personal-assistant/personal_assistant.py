@@ -64,8 +64,7 @@ if __name__ == "__main__":
 
             print("🤖 PersonalBot: ", end="")
             response = personal_assistant_agent(user_input)
-            print(response)
-            print()
+            print("\n")
 
         except KeyboardInterrupt:
             print("\n")
