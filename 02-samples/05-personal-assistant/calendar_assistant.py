@@ -3,6 +3,7 @@ from strands import Agent, tool
 from strands.models import BedrockModel
 from strands_tools import current_time
 from calendar_tools import create_appointment, get_agenda, list_appointments, update_appointment
+from constants import SESSION_ID
 
 # Show rich UI for tools in CLI
 os.environ["STRANDS_TOOL_CONSOLE_MODE"] = "enabled"
@@ -42,6 +43,7 @@ agent = Agent(
         update_appointment,
         get_agenda
     ],
+    trace_attributes={"session.id": SESSION_ID},
 )
 
 

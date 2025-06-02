@@ -4,6 +4,7 @@ from mcp import StdioServerParameters, stdio_client
 from strands import Agent, tool
 from strands.models import BedrockModel
 from strands.tools.mcp import MCPClient
+from constants import SESSION_ID
 
 # Load environment variables
 load_dotenv()
@@ -92,6 +93,7 @@ try:
         model=model,
         system_prompt=system_prompt,
         tools=tools,
+        trace_attributes={"session.id": SESSION_ID},
     )
 except Exception as e:
     perplexity_mcp_server.__exit__(None, None, None)

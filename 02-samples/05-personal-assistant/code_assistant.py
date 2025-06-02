@@ -2,6 +2,7 @@ import os
 from strands import Agent, tool
 from strands.models import BedrockModel
 from strands_tools import python_repl, editor, shell, journal
+from constants import SESSION_ID
 
 # Show rich UI for tools in CLI
 os.environ["STRANDS_TOOL_CONSOLE_MODE"] = "enabled"
@@ -32,6 +33,7 @@ agent = Agent(
     model=model,
     system_prompt=system_prompt,
     tools=[python_repl, editor, shell, journal],
+    trace_attributes={"session.id": SESSION_ID},
 )
 
 
