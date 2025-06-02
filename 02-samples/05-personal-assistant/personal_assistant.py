@@ -14,8 +14,9 @@ model = BedrockModel(
 )
 
 personal_assistant_agent = Agent(
-    tools=[code_assistant, calendar_assistant, search_assistant],
+    model=model,
     system_prompt="You are a personal assistant. Use the agents and tools at your disposal to assist the user.",
+    tools=[code_assistant, calendar_assistant, search_assistant],
     trace_attributes={"session.id": SESSION_ID},
 )
 
